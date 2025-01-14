@@ -1,0 +1,6 @@
+/tmp/tmpltbknije/dolfin_expression_a369f523f18924e8f4221bb3d4f7dfdc.cpp: In member function 'virtual void dolfin::dolfin_expression_a369f523f18924e8f4221bb3d4f7dfdc::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const':
+/tmp/tmpltbknije/dolfin_expression_a369f523f18924e8f4221bb3d4f7dfdc.cpp:65:23: error: cannot convert 'double [2]' to 'Eigen::DenseCoeffsBase<Eigen::Ref<Eigen::Matrix<double, -1, 1> >, 1>::Scalar' {aka 'double'} in assignment
+   65 |           values[0] = u;
+      |                       ^
+      |                       |
+      |                       double [2]
