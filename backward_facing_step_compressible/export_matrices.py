@@ -71,7 +71,7 @@ settings = Settings(mesh_folder        = "mesh",
                     result_folder      = "baseflow", 
                     mesh_out_name      = "backward_facing_step",
                     result_name        = "baseflow",
-                    restart_name       = "no_restart", #no_restart
+                    restart_name       = "baseflow", #baseflow or no_restart
                     boundary           = {"inlet":1, "walls":2, "outlet":3}, 
                     coefficients       = {"Re":40, "Pe":0.7*40, "gamma":1.4, "Ma":0.01}
 )
@@ -99,11 +99,15 @@ if(settings.restart_name == "no_restart"):
 
 # Load inital conditions if we restart.
 else:
-    inital_condition_np = np.load(settings.result_folder + '/' + settings.restart_name + '.npz')
+    try:
+        initial_condition_np = np.load(settings.result_folder + '/' + settings.restart_name + '.npz')
+    except:
+        print("ERROR Could not load file: " + settings.result_folder + '/' + settings.restart_name + '.npz' + ". Does it exist? Try restart_name = no_restart.")
+        exit()
     
-    equation.q0_list[equation.dof["u"]].sub(0).vector().set_local(inital_condition_np["ux"])
-    equation.q0_list[equation.dof["u"]].sub(0).vector().set_local(inital_condition_np["uy"])
-    equation.q0_list[equation.dof["T"]].vector().set_local(inital_condition_np["T"])
+    equation.q0_list[equation.dof["u"]].sub(0).vector().set_local(initial_condition_np["ux"])
+    equation.q0_list[equation.dof["u"]].sub(1).vector().set_local(initial_condition_np["uy"])
+    equation.q0_list[equation.dof["T"]].vector().set_local(initial_condition_np["T"])
     equation.q0_list[equation.dof["p"]].vector().set_local(initial_condition_np["p"])
     
     assigner = FunctionAssigner(equation.q0.function_space(), equation.spaces)
@@ -130,7 +134,8 @@ io_interface.write_paraview(geometry = geometry,
 
 # Write solution to numpy compressed file for loading it later into linear solver / restart.:
 np.savez(settings.result_folder + '/' + str(settings.result_name),
-    u   = equation.q0_list[equation.dof["u"]].vector().get_local(),
+    ux   = equation.q0_list[equation.dof["u"]].sub(0).vector().get_local(),
+    uy   = equation.q0_list[equation.dof["u"]].sub(1).vector().get_local(),
     p   = equation.q0_list[equation.dof["p"]].vector().get_local(),
     T   = equation.q0_list[equation.dof["T"]].vector().get_local()) 
 
@@ -163,7 +168,8 @@ equation  = BackwardFacingStepNSE(settings=settings, geometry=geometry)
 # Load base flow.
 baseflow_np = np.load(settings.baseflow_folder + '/' + settings.baseflow_name + '.npz')
 
-equation.q0_list[equation.dof["u"]].vector().set_local(baseflow_np["u"])
+equation.q0_list[equation.dof["u"]].sub(0).vector().set_local(baseflow_np["ux"])
+equation.q0_list[equation.dof["u"]].sub(1).vector().set_local(baseflow_np["uy"])
 equation.q0_list[equation.dof["p"]].vector().set_local(baseflow_np["p"])
 equation.q0_list[equation.dof["T"]].vector().set_local(baseflow_np["T"])
 
