@@ -10,6 +10,11 @@ Upload the archive and unpack *.tar* file:
 Unzipping a *.zip* file is simple:
 > *unzip name.zip*
 
+If this command is not installed on the VM, run it on a local WSL and compressit into a *.tar.gz* file:
+> *tar -czvf newTarName.tar.gz folderName*
+
+to *cd /mnt/c/Users/User/Downloads*.
+
 Useful when downloading the git respository to run it on the chair's maschine.
 
 Activate anaconda: 
