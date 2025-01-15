@@ -7,6 +7,11 @@ The focus is on applying the learned methods, analysing a base flow on a backwar
 Upload the archive and unpack *.tar* file: 
 > *tar -xvzf name.tar*
 
+Unzipping a *.zip* file is simple:
+> *unzip name.zip*
+
+Useful when downloading the git respository to run it on the chair's maschine.
+
 Activate anaconda: 
 > *source /opt/anaconda/bin/activate* 
 
