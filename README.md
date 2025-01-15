@@ -5,10 +5,11 @@ The focus is on applying the learned methods, analysing a base flow on a backwar
 ## Terminal Comands
 
 Upload the archive and unpack *.tar* file: 
- *tar -xvzf name.tar*
+> *tar -xvzf name.tar*
 
 Activate anaconda: 
-> *source /opt/anaconda/bin/activate* (must show (base)-environment)
+> *source /opt/anaconda/bin/activate* 
+(must show (base)-environment)
 
 *export_matrices.py* and *visualize_optimal_forcing.py* are run from the **fenicsproject** 
 environment: 
