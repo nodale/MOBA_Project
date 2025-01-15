@@ -9,6 +9,7 @@ Upload the archive and unpack *.tar* file:
 
 Activate anaconda: 
 > *source /opt/anaconda/bin/activate* 
+
 (must show (base)-environment)
 
 *export_matrices.py* and *visualize_optimal_forcing.py* are run from the **fenicsproject** 
