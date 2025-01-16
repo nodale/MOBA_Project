@@ -1,0 +1,13 @@
+computer_lab_7_template_compressible/result/
+computer_lab_7_template_compressible/baseflow/
+computer_lab_7_template_compressible/mesh_full/
+computer_lab_7_template_compressible/mesh_half/
+computer_lab_9_template_compressible/result/
+computer_lab_9_template_compressible/baseflow/
+computer_lab_9_template_compressible/mesh_full/
+computer_lab_9_template_compressible/mesh_half/
+backward_facing_step_compressible/result/
+backward_facing_step_compressible/baseflow/
+backward_facing_step_compressible/mesh/
+*/.ipynb_checkpoints/
+code-insiders
