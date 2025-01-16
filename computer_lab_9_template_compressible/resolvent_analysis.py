@@ -17,15 +17,20 @@ from matplotlib import pyplot as plt
 from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
 
+num_ev = 10
+tolerance_ev = 1e-4
+max_iters = 50
+
+
 ######################################################################
 # Configuration of Hermitian eigenvalue problem
 ######################################################################
 def setupHermitianEigenvalueProblem(LEP):
     LEP.setProblemType(SLEPc.EPS.ProblemType.GHEP)
     LEP.setType(SLEPc.EPS.Type.KRYLOVSCHUR)
-    LEP.setDimensions(2, PETSc.DEFAULT, PETSc.DEFAULT)
+    LEP.setDimensions(num_ev, PETSc.DEFAULT, PETSc.DEFAULT)
     LEP.setWhichEigenpairs(SLEPc.EPS.Which.LARGEST_REAL)
-    LEP.setTolerances(1e-9, 50)
+    LEP.setTolerances(tolerance_ev, max_iters)
     
     LEP.setFromOptions
     LEP.view()
@@ -68,9 +73,12 @@ def setup_LHS(St, A_pet, L_pet, B_pet, Qresp_pet):
 
         # y = LHS x
         def mult(cls, J, x, y):
-
-            # Perform multiplication step by step.
-            ''' put your Python code here ... '''
+            B_pet.mult(x, w)
+            R.solve(w, z)
+            Qresp_pet.mult(z, w)
+            RH.solve(w, z)
+            B_pet.multTranspose(z, y)
+            
             
     LHS = PETSc.Mat().create()
     LHS.setSizes(Qforc_pet.size)
@@ -103,7 +111,7 @@ B_pet     = PETSc.Mat().createAIJ(size=B.shape,     csr=(B.indptr,     B.indices
 P_pet     = PETSc.Mat().createAIJ(size=P.shape,     csr=(P.indptr,     P.indices,     P.data))
 
 St_list   = [0.1, 0.11, 0.12, 0.13, 0.14, 0.15]
-gain_list = []
+gain_sum_list = []
 
 for St in St_list:
     print("St: " + str(St))
@@ -132,7 +140,7 @@ for St in St_list:
     print("Stopping condition: tol=%.4g, maxit=%d" % (tol, maxit))
     print("Number of converged eigenpairs %d" % nconv)
 
-    if nconv > 0:
+    if nconv >= nev:
 
         # Create the result vector.
         evR,_ = LHS.getVecs()
@@ -142,40 +150,50 @@ for St in St_list:
         print("        k          ||Ax-kx||/||kx|| ")
         print("----------------- ------------------")
 
-        for iEv in range(nconv):
+        gain_list = []
+        for i_Ev in range(nconv):
     
-            k     = LEP.getEigenvalue(iEv)
-            error = LEP.computeError(iEv)
+            k     = LEP.getEigenvalue(i_Ev)
+            error = LEP.computeError(i_Ev)
     
             print(" %12g      %12g" % (np.sqrt(k.real), error))
     
             # Acces dominant resolvent mode.
-            if iEv == 0:
-                gain_list.append(np.sqrt(k.real))
-                LEP.getEigenvector(0,evR)
+            gain_list.append(np.sqrt(k.real))
+            LEP.getEigenvector(0,evR)
 
-                # Compute optimal forcing in complete DOF space.
-                P_pet.mult(evR,w)
-                f = w.getArray()
+            # Compute optimal forcing in complete DOF space.
+            P_pet.mult(evR,w)
+            f = w.getArray()
 
-                # Compute optimal response in complete DOF space.
-                q,_ = Qresp_pet.getVecs()
-                R.solve(w,q)
-                q = q.getArray()
+            # Compute optimal response in complete DOF space.
+            q,_ = Qresp_pet.getVecs()
+            R.solve(w,q)
+            q = q.getArray()
 
-                # Write optimal forcing and response to hard disk.
-                np.savez('result/fq_' + str("{:4f}".format(St)), f = f, q=q)
+            # Write optimal forcing and response to hard disk.
+            np.savez('result/fq_' + str("{:4f}".format(St)), f = f, q = q)
 
-                # Save gain curve.
-                np.savez('result/gain_curve', St = St_list, gain = gain_list)
+        gain_sum_list.append(np.sum(gain_list[:nev]))
 
-gain_list = np.array(gain_list)
-St_list   = np.array(St_list)
+        # Save gain curve.
+        np.savez('result/gain_curve' + str(St), St = St, gain = gain_list)
+
+    elif nconv > 0:
+        print("ERROR: Not all requested eigenvalues converged! Request fewer eigenvalues or increase max_iters.")
+        exit(1)
+    elif nconv == 0:
+        print("ERROR: No eigenvalues converged!")
+        exit(1)
+
+    np.savez('result/gain_sum_curve', St = St_list, gain = gain_sum_list)
+
+
 
 ###################################################
 # Plot of gain curve
 ##################################################
-plt.plot(St_list,gain_list, 'b-x')
+plt.plot(St_list, gain_sum_list, 'b-x')
 plt.xlabel("St")
 plt.ylabel("Optimal gain")
 plt.savefig("gain_curve.svg")
