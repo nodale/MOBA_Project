@@ -20,10 +20,22 @@ from utilities.convert2csr                      import convert_2_csrmat
 from dolfin import *
 import numpy as np
 import scipy
+import os
 
 # Check for correct anaconda environment. This scrip needs FEniCS loaded. Scalar type should be float64.
 from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
+
+# Get re from system arguments.
+if(len(sys.argv) > 1):
+    Re = int(sys.argv[1])
+else:
+    Re = 40 # default
+    
+try:
+    os.mkdir(os.path.join(os.getcwd(), str(Re)))
+except:
+    pass
 
 # Set boundary conditions.
 class BackwardFacingStepNSE(CompressibleNSE):
@@ -68,13 +80,19 @@ parameters["allow_extrapolation"]  = True
 settings = Settings(mesh_folder        = "mesh",
                     mesh_base_name     = "backward_facing_step", 
                     mesh_name          = "backward_facing_step",
-                    result_folder      = "baseflow", 
                     mesh_out_name      = "backward_facing_step",
-                    result_name        = "baseflow",
+                    result_folder      = str(Re), 
+                    result_name        = "baseflow_" + str(Re),
                     restart_name       = "baseflow", #baseflow or no_restart
                     boundary           = {"inlet":1, "walls":2, "outlet":3}, 
-                    coefficients       = {"Re":40, "Pe":0.7*40, "gamma":1.4, "Ma":0.01}
+                    coefficients       = {"Re":Re, "Pe":0.7*Re, "gamma":1.4, "Ma":0.01}
 )
+
+if settings.restart_name == "baseflow":
+    if not Re == 40:
+        settings.restart_name = str(Re - 20) + "/baseflow_" + str(Re - 20)
+    else:
+        settings.restart_name = str(Re)
 
 # Write set of coefficients to result folder.
 np.savez(settings.result_folder + '/coefficients.npz',
@@ -100,7 +118,10 @@ if(settings.restart_name == "no_restart"):
 # Load inital conditions if we restart.
 else:
     try:
-        initial_condition_np = np.load(settings.result_folder + '/' + settings.restart_name + '.npz')
+        if settings.restart_name == "baseflow":
+            initial_condition_np = np.load(settings.result_folder + '/' + settings.restart_name + '.npz')
+        else:
+            initial_condition_np = np.load(settings.restart_name + '.npz')
     except:
         print("ERROR Could not load file: " + settings.result_folder + '/' + settings.restart_name + '.npz' + ". Does it exist? Try restart_name = no_restart.")
         exit()
@@ -142,9 +163,9 @@ np.savez(settings.result_folder + '/' + str(settings.result_name),
 # Assemble and export matrices.
 settings = Settings(mesh_folder     = "mesh",
                     mesh_name       = "backward_facing_step",
-                    result_folder   = "result",
-                    baseflow_folder = "baseflow",
-                    baseflow_name   = "baseflow",
+                    result_folder   = str(Re),
+                    baseflow_folder = str(Re),
+                    baseflow_name   = "baseflow_" + str(Re),
                     result_name     = "result",
                     boundary        = {"inlet":1, "walls":2, "outlet":3}
                    )
