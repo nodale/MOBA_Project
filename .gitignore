@@ -9,5 +9,7 @@ computer_lab_9_template_compressible/mesh_half/
 backward_facing_step_compressible/result/
 backward_facing_step_compressible/baseflow/
 backward_facing_step_compressible/mesh/
+backward_facing_step_compressible/mesh_full/
+backward_facing_step_compressible/[0-9]*/
 */.ipynb_checkpoints/
 code-insiders
