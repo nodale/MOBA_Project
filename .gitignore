@@ -13,3 +13,5 @@ backward_facing_step_compressible/mesh_full/
 backward_facing_step_compressible/[0-9]*/
 */.ipynb_checkpoints/
 code-insiders
+*.svg
+*.crdownload

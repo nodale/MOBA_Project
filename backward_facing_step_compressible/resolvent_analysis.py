@@ -12,10 +12,20 @@ from slepc4py import SLEPc
 import numpy as np
 import scipy.sparse
 from matplotlib import pyplot as plt
+import sys
 
 # Check anaconda environmnet. This script requires complex petsc/slepc. Scalar type should be complex128.
 from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
+
+# Get case path from system arguments.
+if len(sys.argv) > 1:
+    case_path = str(sys.argv[1]) + "/"
+    print("Using case path: " + case_path)
+else:
+    case_path = "40/"
+    print("No case path provided. Using default case path: " + case_path)
+
 
 ######################################################################
 # Configuration of Hermitian eigenvalue problem
@@ -92,12 +102,12 @@ def setupKSP(P):
     P.setFromOptions()
 
 # Load matrices.
-L     = scipy.sparse.load_npz('result/L.npz')
-A     = scipy.sparse.load_npz('result/A.npz')
-Qresp = scipy.sparse.load_npz('result/Qresp.npz')
-Qforc = scipy.sparse.load_npz('result/Qforc.npz')
-B     = scipy.sparse.load_npz('result/B.npz')
-P     = scipy.sparse.load_npz('result/P.npz')
+L     = scipy.sparse.load_npz(case_path + 'L.npz')
+A     = scipy.sparse.load_npz(case_path + 'A.npz')
+Qresp = scipy.sparse.load_npz(case_path + 'Qresp.npz')
+Qforc = scipy.sparse.load_npz(case_path + 'Qforc.npz')
+B     = scipy.sparse.load_npz(case_path + 'B.npz')
+P     = scipy.sparse.load_npz(case_path + 'P.npz')
  
 # Convert from scipy to petsc matrices.
 L_pet     = PETSc.Mat().createAIJ(size=L.shape,     csr=(L.indptr,     L.indices,     L.data))
@@ -170,10 +180,10 @@ for St in St_list:
                 q = q.getArray()
 
                 # Write optimal forcing and response to hard disk.
-                np.savez('result/fq_' + str("{:4f}".format(St)), f = f, q=q)
+                np.savez(case_path + 'fq_' + str("{:4f}".format(St)), f = f, q=q)
 
                 # Save gain curve.
-                np.savez('result/gain_curve', St = St_list, gain = gain_list)
+                np.savez(case_path + 'gain_curve', St = St_list, gain = gain_list)
 
 gain_list = np.array(gain_list)
 St_list   = np.array(St_list)

@@ -29,8 +29,14 @@ print("Scalar type: " + str(PETSc.ScalarType))
 # Get re from system arguments.
 if(len(sys.argv) > 1):
     Re = int(sys.argv[1])
+    #check if Re - 20 dir exists
+    if not os.path.exists(str(Re - 20)):
+        print("ERROR: Directory " + str(Re - 20) + " does not exist. Please compute baseflow for Re = " + str(Re - 20) + " first.")
+        exit()
 else:
     Re = 40 # default
+
+print("Using Re: " + str(Re))
     
 try:
     os.mkdir(os.path.join(os.getcwd(), str(Re)))

@@ -14,10 +14,19 @@ import scipy.sparse
 
 from matplotlib import pyplot as plt
 import csv
+import sys
 
 # Check anaconda environment. Script needs complex petsc/slepc. Scalar type should be complex128.
 from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
+
+# Get re from system arguments.
+if(len(sys.argv) > 1):
+    case_path = str(sys.argv[1]) + "/"
+    print("Using case path: " + case_path)
+else:
+    case_path = "40/"
+    print("No case path provided. Using default case path: " + case_path)
 
 #################################################################################
 # Setup Generalized Non Hermitian Eigenvalue Problem
@@ -50,8 +59,8 @@ def setupGeneralizedNonHermitianEPS(LEP, shift):
 #Solver
 ##################################################
 # Load matrices.
-L = scipy.sparse.load_npz('result/L.npz')
-A = scipy.sparse.load_npz('result/A.npz')
+L = scipy.sparse.load_npz(case_path + 'L.npz')
+A = scipy.sparse.load_npz(case_path + 'A.npz')
 
 # Important: Here equations are formulatet as (\sigma A + L)q = 0.
 # However, slepc expects Lq = \sigma A q.
@@ -106,13 +115,13 @@ if nconv > 0:
         evL_np = evL.getArray()
     
         # Save eigenvector as compressed numpy archive.
-        np.savez('result/ev_' + str(iEv), evR = evR_np, evL = evL_np)
+        np.savez(case_path + 'ev_' + str(iEv), evR = evR_np, evL = evL_np)
     
     # Save spectrum of case.
-    np.savez('spectrum', spectrum = spectrum)
+    np.savez(case_path + 'spectrum', spectrum = spectrum)
 
     # Plot spectrum.
     plt.scatter(np.imag(spectrum)/(2*3.415),np.real(spectrum))
     plt.ylabel("growth rate")
     plt.xlabel("St")
-    plt.savefig("spectrum.svg")
+    plt.savefig(case_path + "spectrum.svg")
