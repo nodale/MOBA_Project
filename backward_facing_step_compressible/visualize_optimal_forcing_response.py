@@ -22,11 +22,15 @@ from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
 
 # Get re from system arguments.
-if(len(sys.argv) > 1):
+if(len(sys.argv) == 3):
     case_path = str(sys.argv[1]) + "/"
     St = float(sys.argv[2])
     print("Using case path: " + case_path)
     print("Using Strouhal number: " + str(St))
+elif (len(sys.argv) > 1):
+    print("ERROR: Enter case path and Strouhal number!")
+    print("python visualize_optimal_forcing_response.py case_path Strouhal_number")
+    exit()
 else:
     case_path = "40/"
     # Strouhal number
