@@ -4,8 +4,15 @@ The focus is on applying the learned methods, analysing a base flow on a backwar
 
 ## Terminal Comands
 
-Upload the archive and unpack *.tar* file: 
-> *tar -xvzf name.tar*
+### How to upload git repo to MOBA server
+Use the script *archive.sh* to compress the repository into a *.tar* file:
+
+> *./archive.sh*
+
+Upload the archive and unpack *.tar* file on server: 
+> *tar -xvf archive.tar*
+
+### Other commands
 
 Unzipping a *.zip* file is simple:
 > *unzip name.zip*
@@ -28,9 +35,6 @@ environment:
 
 *resolvent_analysis.py* is run from the **petsc** environment: 
 > *conda activate petsc*,
-
-To switch environment you should deactivate the current one: 
-> *conda deactivate*
 
 Generate mesh from my_mesh.geo
 > *gmsh -2 -format msh2 my_mesh.geo*
