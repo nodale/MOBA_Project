@@ -23,7 +23,7 @@ print("Scalar type: " + str(PETSc.ScalarType))
 
 # Get re from system arguments.
 if(len(sys.argv) == 3):
-    case_path = str(sys.argv[1]) + "/"
+    case_path = str(sys.argv[1])
     St = float(sys.argv[2])
     print("Using case path: " + case_path)
     print("Using Strouhal number: " + str(St))
@@ -32,7 +32,7 @@ elif (len(sys.argv) > 1):
     print("python visualize_optimal_forcing_response.py case_path Strouhal_number")
     exit()
 else:
-    case_path = "40/"
+    case_path = "40"
     # Strouhal number
     St = 0.1
     print("No case path provided. Using default case path: " + case_path)
@@ -40,15 +40,15 @@ else:
 
 
 
-settings = Settings(mesh_folder     = "mesh_full",
+settings = Settings(mesh_folder     = "mesh",
                     baseflow_folder = case_path,
-                    mesh_name       = "cylinder_full",
+                    mesh_name       = "backward_facing_step",
                     result_folder   = case_path,
                     result_name     = "result",
                    )
 
 # Load coefficients of base flow.
-coefficients = np.load(settings.baseflow_folder + 'coefficients.npz')
+coefficients = np.load(settings.baseflow_folder + '/coefficients.npz')
 settings.coefficients = {"Re":    coefficients["Re"],
                          "Pe":    coefficients["Pe"],
                          "gamma": coefficients["gamma"],
@@ -64,8 +64,8 @@ geometry = Geometry(settings)
 equation  = CompressibleNSE(settings=settings, geometry=geometry)
 
 # Load optimal forcing and response.
-f_np = np.load(case_path + 'fq_' + str("{:4f}".format(St)) + '.npz')["f"]  # Optimal forcing.
-q_np = np.load(case_path + 'fq_' + str("{:4f}".format(St)) + '.npz')["q"]  # Optimal response.
+f_np = np.load(case_path + '/fq_' + str("{:4f}".format(St)) + '.npz')["f"]  # Optimal forcing.
+q_np = np.load(case_path + '/fq_' + str("{:4f}".format(St)) + '.npz')["q"]  # Optimal response.
 
 equation.q_real_list[equation.dof["u"]].vector().set_local(np.real(q_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
 equation.q_real_list[equation.dof["p"]].vector().set_local(np.real(q_np[equation.VMixed.sub(equation.dof["p"]).dofmap().dofs()]))
