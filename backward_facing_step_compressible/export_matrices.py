@@ -83,12 +83,12 @@ parameters["refinement_algorithm"] = "plaza_with_parent_facets"
 parameters["reorder_dofs_serial"]  = False
 parameters["allow_extrapolation"]  = True
 
-settings = Settings(mesh_folder        = "mesh",
+settings = Settings(mesh_folder        = "mesh_ref",
                     mesh_base_name     = "backward_facing_step", 
                     mesh_name          = "backward_facing_step",
                     mesh_out_name      = "backward_facing_step",
                     result_folder      = str(Re), 
-                    result_name        = "baseflow_" + str(Re),
+                    result_name        = "baseflow",
                     restart_name       = "baseflow", #baseflow or no_restart
                     boundary           = {"inlet":1, "walls":2, "outlet":3}, 
                     coefficients       = {"Re":Re, "Pe":0.7*Re, "gamma":1.4, "Ma":0.01}
@@ -96,7 +96,7 @@ settings = Settings(mesh_folder        = "mesh",
 
 if settings.restart_name == "baseflow":
     if not Re == 40:
-        settings.restart_name = str(Re - 20) + "/baseflow_" + str(Re - 20)
+        settings.restart_name = str(Re - 20) + "/baseflow"
     else:
         settings.restart_name = str(Re)
 
@@ -167,11 +167,11 @@ np.savez(settings.result_folder + '/' + str(settings.result_name),
     T   = equation.q0_list[equation.dof["T"]].vector().get_local()) 
 
 # Assemble and export matrices.
-settings = Settings(mesh_folder     = "mesh",
+settings = Settings(mesh_folder     = "mesh_ref",
                     mesh_name       = "backward_facing_step",
                     result_folder   = str(Re),
                     baseflow_folder = str(Re),
-                    baseflow_name   = "baseflow_" + str(Re),
+                    baseflow_name   = "baseflow",
                     result_name     = "result",
                     boundary        = {"inlet":1, "walls":2, "outlet":3}
                    )

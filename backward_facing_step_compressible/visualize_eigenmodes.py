@@ -31,7 +31,7 @@ else:
 
 
 
-settings = Settings(mesh_folder     = "mesh",
+settings = Settings(mesh_folder     = "mesh_ref",
                     baseflow_folder = case_path,
                     mesh_name       = "backward_facing_step",
                     result_folder   = case_path,
