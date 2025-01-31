@@ -29,12 +29,17 @@ print("Scalar type: " + str(PETSc.ScalarType))
 # Get re from system arguments.
 if(len(sys.argv) > 1):
     Re = int(sys.argv[1])
-    #check if Re - 20 dir exists
-    if not os.path.exists(str(Re - 20)):
-        print("ERROR: Directory " + str(Re - 20) + " does not exist. Please compute baseflow for Re = " + str(Re - 20) + " first.")
-        exit()
+    if Re != 100:
+        restart_name = "baseflow"
+        #check if Re - 100 dir exists
+        if not os.path.exists(str(Re - 100)):
+            print("ERROR: Directory " + str(Re - 100) + " does not exist. Please compute baseflow for Re = " + str(Re - 100) + " first.")
+            exit()
+    else:
+        restart_name = "no_restart"
 else:
-    Re = 40 # default
+    restart_name = "no_restart"
+    Re = 100 # default
 
 print("Using Re: " + str(Re))
     
@@ -89,14 +94,14 @@ settings = Settings(mesh_folder        = "mesh_ref",
                     mesh_out_name      = "backward_facing_step",
                     result_folder      = str(Re), 
                     result_name        = "baseflow",
-                    restart_name       = "baseflow", #baseflow or no_restart
+                    restart_name       = restart_name, #baseflow or no_restart
                     boundary           = {"inlet":1, "walls":2, "outlet":3}, 
                     coefficients       = {"Re":Re, "Pe":0.7*Re, "gamma":1.4, "Ma":0.01}
 )
 
 if settings.restart_name == "baseflow":
-    if not Re == 40:
-        settings.restart_name = str(Re - 20) + "/baseflow"
+    if not Re == 100:
+        settings.restart_name = str(Re - 100) + "/baseflow"
     else:
         settings.restart_name = str(Re)
 

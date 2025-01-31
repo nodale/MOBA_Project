@@ -25,7 +25,7 @@ if(len(sys.argv) > 1):
     case_path = str(sys.argv[1]) + "/"
     print("Using case path: " + case_path)
 else:
-    case_path = "40/"
+    case_path = "100/"
     print("No case path provided. Using default case path: " + case_path)
 
 #################################################################################

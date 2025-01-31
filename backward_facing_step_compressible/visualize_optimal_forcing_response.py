@@ -32,7 +32,7 @@ elif (len(sys.argv) > 1):
     print("python visualize_optimal_forcing_response.py case_path Strouhal_number")
     exit()
 else:
-    case_path = "40"
+    case_path = "100"
     # Strouhal number
     St = 0.1
     print("No case path provided. Using default case path: " + case_path)
