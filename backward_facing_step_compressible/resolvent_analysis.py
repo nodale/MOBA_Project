@@ -118,7 +118,7 @@ B_pet     = PETSc.Mat().createAIJ(size=B.shape,     csr=(B.indptr,     B.indices
 P_pet     = PETSc.Mat().createAIJ(size=P.shape,     csr=(P.indptr,     P.indices,     P.data))
 
 n=20
-St_list   = [0.1, 0.11, 0.12, 0.13, 0.14, 0.15]
+St_list   = np.arange(0.02, 0.12, 0.02)
 gain_list = []
 
 for St in St_list:
@@ -184,6 +184,11 @@ for St in St_list:
 
                 # Save gain curve.
                 np.savez(case_path + 'gain_curve', St = St_list, gain = gain_list)
+                
+        R.destroy()
+        RH.destroy()
+        LHS.destroy()
+
 
 gain_list = np.array(gain_list)
 St_list   = np.array(St_list)
