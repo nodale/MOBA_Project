@@ -74,10 +74,15 @@ Transfinite Surface {5} = {12, 9, 11, 14};
 Transfinite Surface {6} = {14, 11, 5, 13};
 Transfinite Surface {7} = {10, 14, 13, 6};
 
-Transfinite Curve {5, 11, 14} = 100 Using Progression 1;
-Transfinite Curve {4, 2} = 80 Using Progression 1;
-Transfinite Curve {6, 10} = 80 Using Progression 1;
-Transfinite Curve {7, 9, 18} = 60 Using Progression 1;
-Transfinite Curve {17} = 80 Using Progression 1;
-Transfinite Curve {3, 12, 1, 15, 16, 19, 20, 21, 22} = 30 Using Progression 1;
+Transfinite Curve {2, 4} = 120 Using Bump 0.5;
+Transfinite Curve {5, 14} = 300 Using Progression 1.005;
+Transfinite Curve {11} = 300 Using Progression 0.995;
+Transfinite Curve {6, 10, 17} = 120 Using Progression 1;
+Transfinite Curve {7, 18} = 160 Using Progression 0.995;
+Transfinite Curve {9} = 160 Using Progression 1.005;
 
+Transfinite Curve {15, 12, 19, 21} = 25 Using Progression 1.05;
+
+Transfinite Curve {16, 20, 22} = 25 Using Progression 0.95;
+
+Transfinite Curve {1, 3, 12} = 25 Using Bump 0.7;
