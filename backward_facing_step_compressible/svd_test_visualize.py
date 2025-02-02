@@ -58,7 +58,7 @@ EWs = np.load(case_path + '/spectrum.npz')['spectrum']
 
 # Load eigenmodes.
 for i in range(len(EWs)):
-    sv_data = np.load(case_path + 'svd/' + str(i) + '.npz')
+    sv_data = np.load(case_path + '/svd/' + str(i) + '.npz')
     svd_np = sv_data['evSVD']
 
     equation.q_real_list[equation.dof["u"]].vector().set_local(
