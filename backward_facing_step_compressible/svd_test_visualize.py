@@ -56,22 +56,23 @@ equation  = CompressibleNSE(settings=settings, geometry=geometry)
 
 EWs = np.load(case_path + '/spectrum.npz')['spectrum']
 
-# Load eigenmodes.
 for i in range(len(EWs)):
-    sv_data = np.load(case_path + '/svd/' + str(i) + '.npz')
-    svd_np = sv_data['evSVD']
+    sv_data = np.load(case_path + 'svd/' + str(i) + '.npz')
+    svdU_np = sv_data['svdU']
+    svdV_np = sv_data['svdV']
 
-    equation.q_real_list[equation.dof["u"]].vector().set_local(
-        np.real(svd_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
-    equation.q_imag_list[equation.dof["u"]].vector().set_local(
-        np.imag(svd_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
+    equation.q_real_list[equation.dof["u"]].vector().set_local(np.real(svdV_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
+    equation.q_imag_list[equation.dof["u"]].vector().set_local(np.imag(svdV_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
+    equation.f_real_list[equation.dof["u"]].vector().set_local(np.real(svdU_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
+    equation.f_imag_list[equation.dof["u"]].vector().set_local(np.imag(svdU_np[equation.VMixed.sub(equation.dof["u"]).dofmap().dofs()]))
 
-    fields_to_write = {}
-    fields_to_write["svd_real"] = equation.q_real_list[equation.dof["u"]]
-    fields_to_write["svd_imag"] = equation.q_imag_list[equation.dof["u"]]
+    fields_to_write["svdU_real"] = equation.f_real_list[equation.dof["u"]]
+    fields_to_write["svdU_imag"] = equation.f_imag_list[equation.dof["u"]]
+    fields_to_write["svdV_real"] = equation.q_real_list[equation.dof["u"]]
+    fields_to_write["svdV_imag"] = equation.q_imag_list[eation.dof["u"]]
 
     # Write eigenmodes and singular vectors.
     io = Io()
-    io.write_paraview(geometry, settings, "eigen_singular_" + str(i), fields_to_write)
+    io.write_paraview(geometry, settings, "SVD_" + str(i), fields_to_write)
 
 print("Done!")
