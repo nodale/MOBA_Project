@@ -76,3 +76,10 @@ for i in range(len(EWs)):
     io.write_paraview(geometry, settings, "SVD_" + str(i), fields_to_write)
 
 print("Done!")
+
+baseflow_svd = np.load(case_path + '/baseflow_svd.npz')
+equation.q0_list[equation.dof["u"]].sub(0).vector().set_local(baseflow_svd['ux'])
+equation.q0_list[equation.dof["u"]].sub(1).vector().set_local(baseflow_svd['uy'])
+
+io.write_paraview(geometry, settings, "baseflow_svd", {"u": equation.q0_list[equation.dof["u"]]})
+
