@@ -9,7 +9,7 @@ import scipy.interpolate as interpolate
 from scipy.interpolate import LSQUnivariateSpline
 from scipy.interpolate import UnivariateSpline
 
-for case_path in np.arange(100, 1000, 200):
+for case_path in np.arange(100, 600, 200):
     case_path = str(case_path) + '/'
     gain = np.load(case_path + 'gain_curve.npz')
     weight = []
@@ -20,7 +20,7 @@ for case_path in np.arange(100, 1000, 200):
         temp = -gain["gain"][S] * gain["gain"][S] * np.imag(np.dot(fq["f"], fq["q"]))
         weight.append(temp)
 
-    weight = weight/ np.linalg.norm(weight)
+    #weight = weight/ np.linalg.norm(weight)
 
     np.savez(case_path + 'spline_weight', St = gain["St"], weight = weight)
 
@@ -31,7 +31,7 @@ for case_path in np.arange(100, 1000, 200):
     gain_y = gain["gain"] 
     weight_values = weights["weight"]
 
-    spline = UnivariateSpline(St, gain_y, w=weight_values, s=0, k=3)
+    spline = UnivariateSpline(St, gain_y, w=weight_values, s=0)
 
     St_fine = np.linspace(St.min(), St.max(), 300)
     gain_fine = spline(St_fine)
