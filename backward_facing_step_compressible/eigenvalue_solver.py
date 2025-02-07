@@ -5,7 +5,7 @@
 #Created: 06/2024 | P. Brokof, G. Varillon
 ################################################################################################
 
-# Import packages.
+# Import packages.       
 from petsc4py import PETSc
 from slepc4py import SLEPc
 
@@ -17,7 +17,6 @@ import csv
 import sys
 
 # Check anaconda environment. Script needs complex petsc/slepc. Scalar type should be complex128.
-from petsc4py import PETSc
 print("Scalar type: " + str(PETSc.ScalarType))
 
 # Get re from system arguments.
